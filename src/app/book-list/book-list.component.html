@@ -1,0 +1,143 @@
+<div style="padding: 40px; max-width: 1200px; margin: 0 auto;">
+
+
+  <div style="
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 16px;
+    padding: 30px 40px;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 10px 40px rgba(102,126,234,0.4);">
+
+    <div>
+      <h1 style="color:#fff; font-size:28px; font-weight:700; margin-bottom:4px;">
+        📚 BookShop Management System
+      </h1>
+      <p style="color:rgba(255,255,255,0.75); font-size:14px;">
+        Manage your book inventory easily
+      </p>
+    </div>
+
+    <dx-button
+      text="+ Add New Book"
+      type="success"
+      stylingMode="contained"
+      (onClick)="openAddForm()"
+      style="height:42px;">
+    </dx-button>
+  </div>
+
+  <!-- Grid Card -->
+  <div style="
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
+
+    <dx-data-grid
+      [dataSource]="books"
+      [showBorders]="false"
+      [showRowLines]="true"
+      [showColumnLines]="false"
+      [rowAlternationEnabled]="true"
+      [hoverStateEnabled]="true"
+      [columnAutoWidth]="true"
+      [height]="450">
+
+      <!-- Scrolling -->
+      <dxo-scrolling
+        mode="virtual"
+        [useNative]="false"
+        showScrollbar="always">
+      </dxo-scrolling>
+
+      <dxo-paging [enabled]="false"></dxo-paging>
+      <dxo-search-panel [visible]="true" placeholder="🔍 Search books..."></dxo-search-panel>
+
+      <dxi-column dataField="title"    caption="Title"   [minWidth]="150"></dxi-column>
+      <dxi-column dataField="author"   caption="Author"  [minWidth]="130"></dxi-column>
+      <dxi-column dataField="genre"    caption="Genre"   [minWidth]="100"></dxi-column>
+      <dxi-column dataField="price"    caption="Price"   dataType="number" [minWidth]="80"></dxi-column>
+      <dxi-column dataField="quantity" caption="Qty"     dataType="number" [minWidth]="60"></dxi-column>
+      <dxi-column caption="Actions"    [minWidth]="180"  cellTemplate="actionTemplate" [allowSorting]="false"></dxi-column>
+
+      <div *dxTemplate="let cell of 'actionTemplate'" style="display:flex; gap:8px; padding:4px 0;">
+        <dx-button
+          text="Edit"
+          type="default"
+          stylingMode="outlined"
+          (onClick)="openEditForm(cell.data)">
+        </dx-button>
+        <dx-button
+          text="Delete"
+          type="danger"
+          stylingMode="outlined"
+          (onClick)="deleteBook(cell.data.id)">
+        </dx-button>
+      </div>
+    </dx-data-grid>
+  </div>
+
+  <!-- Popup Form -->
+  <dx-popup
+    [(visible)]="popupVisible"
+    [title]="isEditing ? 'Edit Book' : '➕ Add New Book'"
+    [width]="460"
+    height="auto"
+    [showCloseButton]="true"
+    [dragEnabled]="true"
+    [shading]="true"
+    shadingColor="rgba(0,0,0,0.5)">
+
+    <div *dxTemplate="let data of 'content'"
+         style="padding:24px; display:flex; flex-direction:column; gap:16px;">
+
+      <dx-text-box
+        [(value)]="currentBook.title"
+        placeholder="Enter book title"
+        [showClearButton]="true"
+        label="Title">
+      </dx-text-box>
+
+      <dx-text-box
+        [(value)]="currentBook.author"
+        placeholder="Enter author name"
+        [showClearButton]="true"
+        label="Author">
+      </dx-text-box>
+
+      <dx-text-box
+        [(value)]="currentBook.genre"
+        placeholder="e.g. Fiction, Technology"
+        [showClearButton]="true"
+        label="Genre">
+      </dx-text-box>
+
+      <dx-number-box
+        [(value)]="currentBook.price"
+        placeholder="0.00"
+        [min]="0"
+        label="Price ($)">
+      </dx-number-box>
+
+      <dx-number-box
+        [(value)]="currentBook.quantity"
+        placeholder="0"
+        [min]="0"
+        label="Quantity">
+      </dx-number-box>
+
+      <dx-button
+        [text]="isEditing ? 'Update Book' : 'Save Book'"
+        type="success"
+        stylingMode="contained"
+        (onClick)="saveBook()"
+        style="margin-top:8px; height:42px;">
+      </dx-button>
+
+    </div>
+  </dx-popup>
+
+</div>
