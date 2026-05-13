@@ -10,19 +10,22 @@ import {
   DxTemplateModule
 } from 'devextreme-angular';
 import { BookService, Book } from '../services/book.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-book-list',
   standalone: true,
   imports: [
     CommonModule,
-    HttpClientModule,
+    FormsModule,
+
     DxDataGridModule,
-    DxButtonModule,
+    DxPopupModule,
+    DxTemplateModule,
+
     DxTextBoxModule,
     DxNumberBoxModule,
-    DxPopupModule,
-    DxTemplateModule
+    DxButtonModule
   ],
   templateUrl: './book-list.component.html'
 })

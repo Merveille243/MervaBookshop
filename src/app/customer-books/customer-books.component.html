@@ -1,0 +1,111 @@
+<div class="page-wrapper">
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-logo">📚 BookShop</div>
+    <div class="nav-links">
+      <a routerLink="/">Home</a>
+      <a routerLink="/my-orders">📋 My Orders</a>
+      <span class="welcome">👋 {{ currentUser?.name }}</span>
+      <button class="cart-btn" (click)="cartVisible = true">
+        🛒 Cart <span class="cart-badge" *ngIf="cartCount > 0">{{ cartCount }}</span>
+      </button>
+      <button class="logout-btn" (click)="logout()">🚪 Logout</button>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <div class="shop-hero">
+    <h1>Browse Our <span class="highlight">Book Collection</span></h1>
+    <p>Find your next favourite read and add it to your cart</p>
+  </div>
+
+  <!-- Books Grid -->
+  <div class="books-grid">
+    <div class="book-card" *ngFor="let book of books">
+      <div class="book-emoji">📖</div>
+      <div class="book-info">
+        <h3>{{ book.title }}</h3>
+        <p class="author">✍️ {{ book.author }}</p>
+        <span class="genre-badge">{{ book.genre }}</span>
+        <div class="book-footer">
+          <span class="price">${{ book.price }}</span>
+          <span class="stock" [class.low]="book.quantity < 5">
+            {{ book.quantity > 0 ? book.quantity + ' in stock' : 'Out of stock' }}
+          </span>
+        </div>
+        <button
+          class="add-btn"
+          [disabled]="book.quantity === 0"
+          (click)="addToCart(book)">
+          {{ book.quantity === 0 ? 'Out of Stock' : '+ Add to Cart' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cart Popup -->
+  <dx-popup
+    [(visible)]="cartVisible"
+    title="🛒 Your Cart"
+    [width]="520"
+    height="auto"
+    [showCloseButton]="true"
+    [shading]="true"
+    shadingColor="rgba(0,0,0,0.5)">
+
+    <div *dxTemplate="let data of 'content'" style="padding:20px;">
+
+      <!-- Order Success -->
+      <div *ngIf="orderSuccess" class="success-box">
+        <div style="font-size:48px; margin-bottom:12px;">🎉</div>
+        <h3>Order Placed Successfully!</h3>
+        <p>Thank you for your order. You can track it in My Orders.</p>
+        <button class="primary-btn" (click)="cartVisible=false; orderSuccess=false; router.navigate(['/my-orders'])">
+          View My Orders
+        </button>
+      </div>
+
+      <!-- Empty Cart -->
+      <div *ngIf="!orderSuccess && cart.length === 0" class="empty-cart">
+        <div style="font-size:48px;">🛒</div>
+        <p>Your cart is empty</p>
+        <button class="primary-btn" (click)="cartVisible=false">Browse Books</button>
+      </div>
+
+      <!-- Cart Items -->
+      <div *ngIf="!orderSuccess && cart.length > 0">
+        <div class="cart-item" *ngFor="let item of cart; let i = index">
+          <div class="cart-item-info">
+            <span class="cart-emoji">📖</span>
+            <div>
+              <p class="cart-title">{{ item.book.title }}</p>
+              <p class="cart-author">{{ item.book.author }}</p>
+            </div>
+          </div>
+          <div class="cart-item-controls">
+            <button class="qty-btn" (click)="updateQuantity(i, item.quantity - 1)">−</button>
+            <span class="qty-num">{{ item.quantity }}</span>
+            <button class="qty-btn" (click)="updateQuantity(i, item.quantity + 1)">+</button>
+            <span class="item-price">${{ (item.book.price * item.quantity).toFixed(2) }}</span>
+            <button class="remove-btn" (click)="removeFromCart(i)">🗑️</button>
+          </div>
+        </div>
+
+        <div class="cart-total">
+          <span>Total:</span>
+          <span class="total-amount">${{ cartTotal }}</span>
+        </div>
+
+        <button
+          class="place-order-btn"
+          [disabled]="placing"
+          (click)="placeOrder()">
+          {{ placing ? '⏳ Placing Order...' : '✅ Place Order' }}
+        </button>
+      </div>
+
+    </div>
+  </dx-popup>
+
+</div>

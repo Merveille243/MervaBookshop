@@ -1,0 +1,64 @@
+<div class="page-wrapper">
+
+  <nav class="navbar">
+    <div class="nav-logo">📚 BookShop</div>
+    <div class="nav-links">
+      <a routerLink="/shop">🛒 Browse Books</a>
+      <a routerLink="/my-orders">📋 My Orders</a>
+      <span class="welcome">👋 {{ currentUser?.name }}</span>
+      <button class="logout-btn" (click)="logout()">🚪 Logout</button>
+    </div>
+  </nav>
+
+  <div class="content">
+    <div class="page-header">
+      <h1>📋 My <span class="highlight">Orders</span></h1>
+      <p>Track all your orders here</p>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="loading" class="loading">⏳ Loading your orders...</div>
+
+    <!-- No orders -->
+    <div *ngIf="!loading && orders.length === 0" class="empty">
+      <div style="font-size:56px; margin-bottom:16px;">📭</div>
+      <h3>No orders yet</h3>
+      <p>You have not placed any orders yet.</p>
+      <a routerLink="/shop" class="shop-btn">🛒 Start Shopping</a>
+    </div>
+
+    <!-- Orders List -->
+    <div *ngIf="!loading && orders.length > 0" class="orders-list">
+      <div class="order-card" *ngFor="let order of orders">
+
+        <div class="order-header">
+          <div>
+            <h3>Order #{{ order.id }}</h3>
+            <p class="order-date">{{ order.created_at | date: 'MMM d, y – h:mm a' }}</p>
+          </div>
+          <div class="order-header-right">
+            <span class="status-badge" [style.background]="statusColor(order.status) + '22'" [style.color]="statusColor(order.status)" [style.borderColor]="statusColor(order.status) + '55'">
+              {{ order.status | uppercase }}
+            </span>
+            <span class="order-total">${{ order.total_amount }}</span>
+          </div>
+        </div>
+
+        <div class="order-items">
+          <div class="order-item" *ngFor="let item of order.items">
+            <span class="item-emoji">📖</span>
+            <div class="item-details">
+              <p class="item-title">{{ item.book?.title }}</p>
+              <p class="item-author">{{ item.book?.author }}</p>
+            </div>
+            <div class="item-right">
+              <span class="item-qty">x{{ item.quantity }}</span>
+              <span class="item-price">${{ (item.price * item.quantity).toFixed(2) }}</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

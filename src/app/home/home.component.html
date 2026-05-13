@@ -1,75 +1,75 @@
-<div class="home-wrapper">
 <!-- Navbar -->
 <nav class="navbar">
-  <div class="nav-logo">📚MervaBookShop</div>
+  <div class="nav-logo">📚 BookShop</div>
   <div class="nav-links">
     <a routerLink="/">Home</a>
     <a routerLink="/about">About</a>
     <a routerLink="/contact">Contact</a>
-    <a routerLink="/books" class="nav-btn">🛒 Browse Books</a>
+    <a routerLink="/shop">🛒 Browse Books</a>
+
+    <ng-container *ngIf="!isLoggedIn">
+      <button class="nav-btn" (click)="openLogin()">🔐 Login</button>
+    </ng-container>
+
+    <ng-container *ngIf="isLoggedIn">
+      <span style="color:rgba(255,255,255,0.8); font-size:14px;">
+        👋 {{ currentUser?.name }}
+      </span>
+      <a *ngIf="isAdmin"    routerLink="/admin/books">📚 Manage Books</a>
+      <a *ngIf="isAdmin"    routerLink="/admin/orders">📦 Orders</a>
+      <a *ngIf="isCustomer" routerLink="/my-orders">📋 My Orders</a>
+      <button class="nav-btn-danger" (click)="logout()">🚪 Logout</button>
+    </ng-container>
   </div>
 </nav>
 
-  <!-- Hero Section -->
-  <div class="hero">
-    <div class="hero-content">
-      <div class="badge">Welcome to our store</div>
-      <h1 class="hero-title">
-        Discover Your Next <br>
-        <span class="highlight">Favourite Book</span>
-      </h1>
-      <p class="hero-subtitle">
-        Explore thousands of books across all genres. From timeless classics
-        to modern bestsellers — your next great read is just a click away.
+<!-- Login Popup -->
+<dx-popup
+  [(visible)]="loginPopupVisible"
+  title="Welcome to BookShop"
+  [width]="440"
+  height="auto"
+  [showCloseButton]="true"
+  [shading]="true"
+  shadingColor="rgba(0,0,0,0.6)">
+
+  <div *dxTemplate="let data of 'content'" style="padding:20px;">
+
+    <dx-tabs [dataSource]="tabs" [(selectedIndex)]="activeTab" style="margin-bottom:20px;"></dx-tabs>
+
+    <div *ngIf="errorMsg" style="
+      background:rgba(239,68,68,0.1);
+      border:1px solid rgba(239,68,68,0.3);
+      border-radius:8px; padding:12px;
+      color:#ef4444; font-size:14px; margin-bottom:16px;">
+      ⚠️ {{ errorMsg }}
+    </div>
+
+    <!-- Admin Login -->
+    <div *ngIf="activeTab === 0" style="display:flex; flex-direction:column; gap:14px;">
+      <dx-text-box [(value)]="adminEmail"    label="Admin Email"    placeholder="admin@bookshop.com"></dx-text-box>
+      <dx-text-box [(value)]="adminPassword" label="Password"       placeholder="••••••••" mode="password"></dx-text-box>
+      <dx-button text="🔐 Login as Admin" type="success" stylingMode="contained" (onClick)="adminLogin()" style="height:42px;"></dx-button>
+    </div>
+
+    <!-- Customer Login -->
+    <div *ngIf="activeTab === 1" style="display:flex; flex-direction:column; gap:14px;">
+      <dx-text-box [(value)]="customerEmail"    label="Email"    placeholder="your@email.com"></dx-text-box>
+      <dx-text-box [(value)]="customerPassword" label="Password" placeholder="••••••••" mode="password"></dx-text-box>
+      <dx-button text="👤 Login as Customer" type="success" stylingMode="contained" (onClick)="customerLogin()" style="height:42px;"></dx-button>
+      <p style="text-align:center; color:rgba(0,0,0,0.5); font-size:13px;">
+        No account? <a (click)="activeTab=2" style="color:#667eea; cursor:pointer;">Register here</a>
       </p>
-      <div class="hero-buttons">
-        <button class="btn-primary" (click)="goToShop()">
-          🛒 Browse Books
-        </button>
-        <button class="btn-secondary">
-          📖 Learn More
-        </button>
-      </div>
-      <div class="hero-stats">
-        <div class="stat">
-          <span class="stat-number">10,000+</span>
-          <span class="stat-label">Books Available</span>
-        </div>
-        <div class="stat">
-          <span class="stat-number">500+</span>
-          <span class="stat-label">Authors</span>
-        </div>
-        <div class="stat">
-          <span class="stat-number">50+</span>
-          <span class="stat-label">Genres</span>
-        </div>
-      </div>
+    </div>
+
+    <!-- Register -->
+    <div *ngIf="activeTab === 2" style="display:flex; flex-direction:column; gap:14px;">
+      <dx-text-box [(value)]="regName"     label="Full Name"    placeholder="John Doe"></dx-text-box>
+      <dx-text-box [(value)]="regEmail"    label="Email"        placeholder="your@email.com"></dx-text-box>
+      <dx-text-box [(value)]="regPassword" label="Password"     placeholder="••••••••" mode="password"></dx-text-box>
+      <dx-text-box [(value)]="regPhone"    label="Phone"        placeholder="+254 700 000 000"></dx-text-box>
+      <dx-button text="📝 Create Account" type="success" stylingMode="contained" (onClick)="register()" style="height:42px;"></dx-button>
     </div>
 
   </div>
-
-  <!-- Features Section -->
-  <div class="features">
-    <div class="feature-card">
-      <div class="feature-icon"></div>
-      <h3>Fast Delivery</h3>
-      <p>Get your books delivered to your doorstep within 2-3 business days.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon"></div>
-      <h3>Best Prices</h3>
-      <p>We offer competitive prices and regular discounts on all books.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon"></div>
-      <h3>Secure Payment</h3>
-      <p>Your transactions are 100% safe and secure with us.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon"></div>
-      <h3>Easy Returns</h3>
-      <p>Not satisfied? Return any book within 30 days hassle-free.</p>
-    </div>
-  </div>
-
-</div>
+</dx-popup>

@@ -242,3 +242,17 @@
 .nav-btn:hover {
   opacity: 0.85;
 }
+.nav-btn-danger {
+  background: rgba(239,68,68,0.2);
+  color: #fca5a5;
+  border: 1px solid rgba(239,68,68,0.3);
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.nav-btn-danger:hover {
+  background: rgba(239,68,68,0.35);
+}

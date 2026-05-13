@@ -1,0 +1,112 @@
+<p>admin-orders works!</p>
+<div style="padding: 40px; max-width: 1200px; margin: 0 auto;">
+
+  <!-- Header -->
+  <div style="
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 16px;
+    padding: 28px 36px;
+    margin-bottom: 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 10px 40px rgba(102,126,234,0.4);">
+
+    <div>
+      <h1 style="color:#fff; font-size:26px; font-weight:700; margin:0 0 4px;">
+        📦 Orders Management
+      </h1>
+      <p style="color:rgba(255,255,255,0.7); margin:0; font-size:14px;">
+        View and manage all customer orders
+      </p>
+    </div>
+
+    <div style="display:flex; gap:12px;">
+      <a routerLink="/admin/books" style="
+        background:rgba(255,255,255,0.2);
+        color:#fff; text-decoration:none;
+        padding:10px 20px; border-radius:8px;
+        font-weight:600; font-size:14px;">
+        📚 Manage Books
+      </a>
+      <button (click)="loadOrders()" style="
+        background:rgba(255,255,255,0.15);
+        color:#fff; border:1px solid rgba(255,255,255,0.3);
+        padding:10px 20px; border-radius:8px;
+        font-weight:600; font-size:14px; cursor:pointer;">
+        🔄 Refresh
+      </button>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-bottom:28px;">
+    <div style="background:#fff; border-radius:14px; padding:24px; box-shadow:0 4px 20px rgba(0,0,0,0.08); text-align:center;">
+      <p style="color:#888; font-size:13px; margin:0 0 8px;">Total Orders</p>
+      <p style="font-size:36px; font-weight:800; color:#667eea; margin:0;">{{ orders.length }}</p>
+    </div>
+    <div style="background:#fff; border-radius:14px; padding:24px; box-shadow:0 4px 20px rgba(0,0,0,0.08); text-align:center;">
+      <p style="color:#888; font-size:13px; margin:0 0 8px;">Pending Orders</p>
+      <p style="font-size:36px; font-weight:800; color:#fbbf24; margin:0;">{{ pendingCount }}</p>
+    </div>
+    <div style="background:#fff; border-radius:14px; padding:24px; box-shadow:0 4px 20px rgba(0,0,0,0.08); text-align:center;">
+      <p style="color:#888; font-size:13px; margin:0 0 8px;">Total Revenue</p>
+      <p style="font-size:36px; font-weight:800; color:#34d399; margin:0;">${{ totalRevenue }}</p>
+    </div>
+  </div>
+
+  <!-- Orders Grid -->
+  <div style="background:#fff; border-radius:16px; padding:24px; box-shadow:0 10px 40px rgba(0,0,0,0.1);">
+
+    <div *ngIf="loading" style="text-align:center; padding:40px; color:#888;">
+      ⏳ Loading orders...
+    </div>
+
+    <dx-data-grid
+      *ngIf="!loading"
+      [dataSource]="orders"
+      [showBorders]="false"
+      [showRowLines]="true"
+      [showColumnLines]="false"
+      [rowAlternationEnabled]="true"
+      [hoverStateEnabled]="true"
+      [columnAutoWidth]="true"
+      [height]="500">
+
+      <dxo-scrolling mode="virtual" showScrollbar="always"></dxo-scrolling>
+      <dxo-paging [enabled]="false"></dxo-paging>
+      <dxo-search-panel [visible]="true" placeholder="🔍 Search orders..."></dxo-search-panel>
+
+      <dxi-column dataField="id"             caption="Order #"   [width]="90"></dxi-column>
+      <dxi-column dataField="customer.name"  caption="Customer"  [minWidth]="130"></dxi-column>
+      <dxi-column dataField="customer.email" caption="Email"     [minWidth]="160"></dxi-column>
+      <dxi-column dataField="total_amount"   caption="Total"     [minWidth]="90" cellTemplate="totalTemplate"></dxi-column>
+      <dxi-column dataField="created_at"     caption="Date"      [minWidth]="130" dataType="date"></dxi-column>
+      <dxi-column dataField="status"         caption="Status"    [minWidth]="120" cellTemplate="statusTemplate"></dxi-column>
+      <dxi-column                            caption="Update"    [minWidth]="180" cellTemplate="actionTemplate" [allowSorting]="false"></dxi-column>
+
+      <div *dxTemplate="let cell of 'totalTemplate'">
+        <span style="font-weight:700; color:#667eea;">${{ cell.value }}</span>
+      </div>
+
+      <div *dxTemplate="let cell of 'statusTemplate'">
+        <span [style.background]="statusColor(cell.value) + '22'"
+              [style.color]="statusColor(cell.value)"
+              [style.border]="'1px solid ' + statusColor(cell.value) + '55'"
+              style="padding:4px 10px; border-radius:12px; font-size:12px; font-weight:700;">
+          {{ cell.value | uppercase }}
+        </span>
+      </div>
+
+      <div *dxTemplate="let cell of 'actionTemplate'" style="display:flex; gap:6px;">
+        <dx-select-box
+          [items]="statusOptions"
+          [value]="cell.data.status"
+          (onValueChanged)="updateStatus(cell.data.id, $event.value)"
+          [width]="140">
+        </dx-select-box>
+      </div>
+
+    </dx-data-grid>
+  </div>
+</div>
