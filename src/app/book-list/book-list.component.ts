@@ -11,6 +11,7 @@ import {
 } from 'devextreme-angular';
 import { BookService, Book } from '../services/book.service';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-book-list',
@@ -35,13 +36,21 @@ export class BookListComponent implements OnInit {
   isEditing = false;
   currentBook: Book = { title: '', author: '', genre: '', price: 0, quantity: 0 };
 
-  constructor(private bookService: BookService) {}
-
+constructor(
+  private bookService: BookService,
+  private router: Router
+) {}
   ngOnInit() { this.loadBooks(); }
 
   loadBooks() {
     this.bookService.getBooks().subscribe(data => this.books = data);
   }
+  refreshBooks() {
+  this.loadBooks();
+}
+goHome() {
+  this.router.navigate(['/']);
+}
 
   openAddForm() {
     this.isEditing = false;
@@ -56,31 +65,34 @@ export class BookListComponent implements OnInit {
   }
 
  saveBook() {
-  if (this.isEditing && this.currentBook.id) {
-    this.bookService.updateBook(this.currentBook.id, this.currentBook)
-      .subscribe({
-        next: () => {
-          this.loadBooks();
-          this.popupVisible = false;
-        },
-        error: (err) => {
-          console.error('Update failed', err);
-          alert('Failed to update book. Check console for details.');
-        }
+
+  if (this.isEditing) {
+
+    this.bookService
+      .updateBook(this.currentBook.id!, this.currentBook)
+      .subscribe(() => {
+
+        this.loadBooks();
+
+        // Close popup
+        this.popupVisible = false;
+
       });
+
   } else {
-    this.bookService.createBook(this.currentBook)
-      .subscribe({
-        next: () => {
-          this.loadBooks();
-          this.popupVisible = false;
-        },
-        error: (err) => {
-          console.error('Create failed', err);
-          alert('Failed to save book. Check console for details.');
-        }
+
+    this.bookService
+      .createBook(this.currentBook)
+      .subscribe(() => {
+
+        this.loadBooks();
+
+        // Close popup
+        this.popupVisible = false;
+
       });
   }
+
 }
 
   deleteBook(id: number) {

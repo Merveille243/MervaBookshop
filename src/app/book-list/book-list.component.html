@@ -13,20 +13,43 @@
 
     <div>
       <h1 style="color:#fff; font-size:28px; font-weight:700; margin-bottom:4px;">
-        📚 BookShop Management System
+        BookShop Management System
       </h1>
       <p style="color:rgba(255,255,255,0.75); font-size:14px;">
         Manage your book inventory easily
       </p>
     </div>
 
-    <dx-button
-      text="+ Add New Book"
-      type="success"
-      stylingMode="contained"
-      (onClick)="openAddForm()"
-      style="height:42px;">
-    </dx-button>
+    <div style="display:flex; gap:10px;">
+
+  <!-- Home Button -->
+  <dx-button
+  text="Home"
+  type="normal"
+  stylingMode="contained"
+  (onClick)="goHome()"
+  style="height:42px;">
+</dx-button>
+
+  <!-- Refresh Button -->
+  <dx-button
+    text="Refresh"
+    type="default"
+    stylingMode="contained"
+    (onClick)="refreshBooks()"
+    style="height:42px;">
+  </dx-button>
+
+  <!-- Add Book Button -->
+  <dx-button
+    text="+ Add New Book"
+    type="success"
+    stylingMode="contained"
+    (onClick)="openAddForm()"
+    style="height:42px;">
+  </dx-button>
+
+</div>
   </div>
 
   <!-- Grid Card -->
@@ -60,7 +83,7 @@
       <dxi-column dataField="author"   caption="Author"  [minWidth]="130"></dxi-column>
       <dxi-column dataField="genre"    caption="Genre"   [minWidth]="100"></dxi-column>
       <dxi-column dataField="price"    caption="Price"   dataType="number" [minWidth]="80"></dxi-column>
-      <dxi-column dataField="quantity" caption="Qty"     dataType="number" [minWidth]="60"></dxi-column>
+      <dxi-column dataField="quantity" caption="Quantity"     dataType="number" [minWidth]="100"></dxi-column>
       <dxi-column caption="Actions"    [minWidth]="180"  cellTemplate="actionTemplate" [allowSorting]="false"></dxi-column>
 
       <div *dxTemplate="let cell of 'actionTemplate'" style="display:flex; gap:8px; padding:4px 0;">
@@ -83,7 +106,7 @@
   <!-- Popup Form -->
   <dx-popup
     [(visible)]="popupVisible"
-    [title]="isEditing ? 'Edit Book' : '➕ Add New Book'"
+    [title]="isEditing ? 'Edit Book' : 'Add New Book'"
     [width]="460"
     height="auto"
     [showCloseButton]="true"
@@ -130,9 +153,10 @@
       </dx-number-box>
 
       <dx-button
-        [text]="isEditing ? 'Update Book' : 'Save Book'"
+        [text]="isSaving ? 'Saving...' : (isEditing ? 'Update Book' : 'Save Book')"
         type="success"
         stylingMode="contained"
+        [disabled]="isSaving"
         (onClick)="saveBook()"
         style="margin-top:8px; height:42px;">
       </dx-button>

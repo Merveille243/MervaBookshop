@@ -3,28 +3,28 @@
   <nav class="navbar">
     <div class="nav-logo">📚 BookShop</div>
     <div class="nav-links">
-      <a routerLink="/shop">🛒 Browse Books</a>
-      <a routerLink="/my-orders">📋 My Orders</a>
-      <span class="welcome">👋 {{ currentUser?.name }}</span>
-      <button class="logout-btn" (click)="logout()">🚪 Logout</button>
+      <a routerLink="/shop"> Browse Books</a>
+      <a routerLink="/my-orders"> My Orders</a>
+      <span class="welcome">&nbsp;&nbsp;{{ currentUser?.name }}</span>
+      <button class="logout-btn" (click)="logout()">Logout</button>
     </div>
   </nav>
 
   <div class="content">
     <div class="page-header">
-      <h1>📋 My <span class="highlight">Orders</span></h1>
+      <h1> My <span class="highlight">Orders</span></h1>
       <p>Track all your orders here</p>
     </div>
 
     <!-- Loading -->
-    <div *ngIf="loading" class="loading">⏳ Loading your orders...</div>
+    <div *ngIf="loading" class="loading">Loading your orders...</div>
 
     <!-- No orders -->
     <div *ngIf="!loading && orders.length === 0" class="empty">
       <div style="font-size:56px; margin-bottom:16px;">📭</div>
       <h3>No orders yet</h3>
       <p>You have not placed any orders yet.</p>
-      <a routerLink="/shop" class="shop-btn">🛒 Start Shopping</a>
+      <a routerLink="/shop" class="shop-btn"> Start Shopping</a>
     </div>
 
     <!-- Orders List -->
